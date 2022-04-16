@@ -1,23 +1,18 @@
 package com.humga.cloudservice.controller;
 
 
+import com.humga.cloudservice.dto.LoginFormDTO;
 import lombok.Data;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -81,5 +76,11 @@ public class CloudController {
                 .sorted(Map.Entry.comparingByKey())
                 .limit(limit)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String login(@RequestBody LoginFormDTO loginFormDTO) {
+        //service.login
+        return "{\"auth-token\":"+"12312312}";
     }
 }
