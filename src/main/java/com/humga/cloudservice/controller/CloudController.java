@@ -17,6 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
@@ -61,5 +65,21 @@ public class CloudController {
             @RequestParam("filename") String name, @RequestHeader("auth-token") String authToken,
             @RequestBody String newName) {
         //service.updateFile
+    }
+
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Integer> getFilesList(
+            @RequestParam("limit") int limit, @RequestHeader("auth-token") String authToken) {
+        Map<String, Integer> map = new HashMap<>();
+        //service.getFilesList
+        map.put("afileOne.txt", 23234342);
+        map.put("bfileTwo.jpg", 232342);
+        map.put("cfileThree.dat", 534534);
+
+        //сортируем мапу по ключу - имени файла и выбрасываем все значения больше limit
+        return map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .limit(limit)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
