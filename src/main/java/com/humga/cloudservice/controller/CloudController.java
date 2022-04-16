@@ -83,4 +83,9 @@ public class CloudController {
         //service.login
         return "{\"auth-token\":"+"12312312}";
     }
+
+    @PostMapping (value = "/logout")
+    public void logout(@RequestHeader("auth-token") String authToken) {
+        //service.updateFile
+    }
 }
