@@ -1,0 +1,53 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet author="humga" id="001">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="id" type="serial">
+                <constraints primaryKey="true" primaryKeyName="pk_users" nullable="false"/>
+            </column>
+            <column name="login" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- нативный ченджсет только для случая если используется db postgresq  -->
+    <changeSet author="humga" id="002" dbms="postgresql">
+        <sql>
+            alter table users
+                add constraint valid_email check (login ~* '^[A-Za-z0-9._]+[@][A-Za-z0-9.-]+[.][A-Za-z]+$');
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="humga" id="003">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <tableExists tableName="files"/>
+        </not>
+    </preConditions>
+    <createTable tableName="files">
+        <column name="id" type="serial">
+            <constraints primaryKey="true" primaryKeyName="pk_files" nullable="false"/>
+        </column>
+        <column name="user_id" type ='integer'>
+            <constraints foreignKeyName="fk_user_id" references="users(id)" nullable="false"/>
+        </column>
+        <column name="file" type ='blob'/>
+    </createTable>
+    </changeSet>
+</databaseChangeLog>
+
+

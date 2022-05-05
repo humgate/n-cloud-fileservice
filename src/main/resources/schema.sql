@@ -1,4 +1,4 @@
-/* DML скрипт создания схемы для справки. Схема БД в приложении создается через liquibase */
+/* DML скрипт создания схемы (для справки). Схема БД в приложении создается через liquibase */
 create table users
 (
     id       serial primary key,
@@ -16,7 +16,6 @@ create table users
     [A-Za-z]+ - символ из диапазонов A-Z или a-z один или более раз
     $ - конец строки
 */
-
 alter table users add constraint valid_email check (login ~* '^[A-Za-z0-9._]+[@][A-Za-z0-9.-]+[.][A-Za-z]+$');
 
 create table files
@@ -26,4 +25,6 @@ create table files
     filename    varchar(64) not null,
     data    bytea not null
 );
+
+
 
