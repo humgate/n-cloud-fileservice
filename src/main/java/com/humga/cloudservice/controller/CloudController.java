@@ -2,7 +2,6 @@ package com.humga.cloudservice.controller;
 
 
 import com.humga.cloudservice.dto.LoginFormDTO;
-import lombok.Data;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
