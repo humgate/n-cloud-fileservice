@@ -23,7 +23,7 @@
         </createTable>
     </changeSet>
 
-    <!-- нативный ченджсет только для случая если используется db postgresq  -->
+    <!-- нативный ченджсет только для случая если используется db postgresql  -->
     <changeSet author="humga" id="002" dbms="postgresql">
         <sql>
             alter table users
