@@ -58,7 +58,7 @@ paths:
           schema:
             type: string
           required: true
-        - name: filename
+        - name: fileName
           in: query
           schema:
             type: string
@@ -91,7 +91,7 @@ paths:
           schema:
             type: string
           required: true
-        - name: filename
+        - name: fileName
           in: query
           schema:
             type: string
@@ -126,7 +126,7 @@ paths:
           schema:
             type: string
           required: true
-        - name: filename
+        - name: fileName
           in: query
           schema:
             type: string
@@ -164,7 +164,7 @@ paths:
           schema:
             type: string
           required: true
-        - name: filename
+        - name: fileName
           in: query
           schema:
             type: string

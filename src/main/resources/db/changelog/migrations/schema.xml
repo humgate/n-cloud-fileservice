@@ -23,7 +23,7 @@
         </createTable>
     </changeSet>
 
-    <!-- нативный ченджсет только для случая если используется db postgresql  -->
+    <!-- нативный ченджсет только для случая если используется db postgresql устанлвим проверку формата login -->
     <changeSet author="humga" id="002" dbms="postgresql">
         <sql>
             alter table users
@@ -33,20 +33,33 @@
 
 
     <changeSet author="humga" id="003">
-    <preConditions onFail="MARK_RAN">
-        <not>
-            <tableExists tableName="files"/>
-        </not>
-    </preConditions>
-    <createTable tableName="files">
-        <column name="id" type="serial">
-            <constraints primaryKey="true" primaryKeyName="pk_files" nullable="false"/>
-        </column>
-        <column name="user_id" type ='integer'>
-            <constraints foreignKeyName="fk_user_id" references="users(id)" nullable="false"/>
-        </column>
-        <column name="file" type ='blob'/>
-    </createTable>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="files"/>
+            </not>
+        </preConditions>
+        <createTable tableName="files">
+            <column name="id" type="serial">
+                <constraints primaryKey="true" primaryKeyName="pk_files" nullable="false"/>
+            </column>
+            <column name="user_id" type='integer'>
+                <constraints foreignKeyName="fk_user_id" references="users(id)" nullable="false"/>
+            </column>
+            <column name="filename" type='varchar(255)'>
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type='blob'>
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- нативный ченджсет только для случая если используется db postgresql установим тип поля data в bytea-->
+    <changeSet author="humga" id="004" dbms="postgresql">
+        <sql>
+            alter table files drop column data;
+            alter table files add data bytea not null;
+        </sql>
     </changeSet>
 </databaseChangeLog>
 

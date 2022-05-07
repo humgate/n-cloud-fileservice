@@ -8,10 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity @Table(name = "files")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -19,6 +19,13 @@ public class File {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @Column(name = "file", nullable = false, columnDefinition = "blob")
+    @Column(name="filename", nullable = false)
+    private String filename;
+    @Column(name = "data", nullable = false, columnDefinition = "blob")
     private byte[] file;
+
+    public File(String filename, byte[] file) {
+        this.filename=filename;
+        this.file = file;
+    }
 }

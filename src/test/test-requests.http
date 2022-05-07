@@ -1,4 +1,4 @@
-GET http://localhost:8080/cloud/file?filename=filename
+GET http://localhost:8080/cloud/file?fileName=filename
 auth-token: token
 
 
