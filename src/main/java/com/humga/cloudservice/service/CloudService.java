@@ -1,7 +1,11 @@
 package com.humga.cloudservice.service;
 
+import com.humga.cloudservice.entity.File;
 import com.humga.cloudservice.repository.CloudRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CloudService {
@@ -12,6 +16,23 @@ public class CloudService {
     }
 
     public void saveFile(String filename, byte[] bytes) {
-        repository.save("filename.txt", bytes);
+        repository.saveFile(filename, bytes);
     }
+
+    public void deleteFile(String filename) {
+        repository.deleteFile(filename);
+    }
+
+    public byte[] getFile(String filename) {
+        return repository.getFile(filename).getFile();
+    }
+
+    public void renameFile(String filename, String newname) {
+        repository.renameFile(filename, newname);
+    }
+
+    public List<File> getFilesList(int limit) {
+        return repository.getFilesList(limit);
+    }
+
 }

@@ -23,7 +23,7 @@
         </createTable>
     </changeSet>
 
-    <!-- нативный ченджсет только для случая если используется db postgresql устанлвим проверку формата login -->
+    <!-- нативный ченджсет только для случая если используется db postgresql установим проверку формата -->
     <changeSet author="humga" id="002" dbms="postgresql">
         <sql>
             alter table users
@@ -46,20 +46,30 @@
                 <constraints foreignKeyName="fk_user_id" references="users(id)" nullable="false"/>
             </column>
             <column name="filename" type='varchar(255)'>
-                <constraints nullable="false"/>
-            </column>
-            <column name="data" type='blob'>
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
     </changeSet>
 
-    <!-- нативный ченджсет только для случая если используется db postgresql установим тип поля data в bytea-->
-    <changeSet author="humga" id="004" dbms="postgresql">
+    <!-- нативный ченджсет только для db postgresql установим тип поля data в bytea-->
+    <changeSet author="humga" id="0041" dbms="postgresql">
         <sql>
-            alter table files drop column data;
             alter table files add data bytea not null;
         </sql>
+    </changeSet>
+
+    <!-- для всех остальных db установим тип поля data в blob-->
+    <changeSet author="humga" id="0042">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="files" columnName="data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="files">
+            <column name="data" type='blob'>
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
 

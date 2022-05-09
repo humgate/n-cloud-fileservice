@@ -1,8 +1,9 @@
 package com.humga.cloudservice.controller;
 
 
+import com.humga.cloudservice.dto.FileNameDTO;
 import com.humga.cloudservice.dto.LoginFormDTO;
-import org.springframework.core.io.FileSystemResource;
+import com.humga.cloudservice.entity.File;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -12,7 +13,6 @@ import com.humga.cloudservice.service.CloudService;
 
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
@@ -34,63 +34,62 @@ public class CloudController {
     public void postFile(
             @RequestParam("filename") String fileName, @RequestHeader("auth-token") String authToken,
             @RequestParam("hash") String hash, @RequestParam("file") MultipartFile file) throws IOException {
-        //file.transferTo(Paths.get("downloaded.http"));
+
         service.saveFile(fileName, file.getBytes());
     }
 
     @DeleteMapping(value = "/file")
     public void deleteFile(
-            @RequestParam("fileName") String name, @RequestHeader("auth-token") String authToken) {
-        //service.deleteFile
+            @RequestParam("filename") String filename, @RequestHeader("auth-token") String authToken) {
+
+        service.deleteFile(filename);
     }
 
     @GetMapping(value = "/file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public MultiValueMap<String, Object> getFile(
-            @RequestParam("fileName") String name, @RequestHeader("auth-token") String authToken) {
+            @RequestParam("filename") String filename, @RequestHeader("auth-token") String authToken) {
+
         //класс для подсчета чек-суммы файла
         Checksum crc32 = new CRC32();
         //service.getFile
-        FileSystemResource fileResource = new FileSystemResource("src/test/test-requests.http");
-        byte[] bytes = fileResource.toString().getBytes();
+
+        byte[] bytes = service.getFile(filename);
         //обновляем(вычисляем) чек-сумму на основе байтового массива полученного из файла
         crc32.update(bytes, 0, bytes.length);
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
         formData.add("hash",  crc32.getValue());
-        formData.add("file", fileResource);
+        formData.add("file", bytes);
         return formData;
     }
 
-    @PutMapping (value = "/file", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/file", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateFile(
-            @RequestParam("fileName") String name, @RequestHeader("auth-token") String authToken,
-            @RequestBody String newName) {
-        //service.updateFile
+            @RequestParam("filename") String filename, @RequestHeader("auth-token") String authToken,
+            @RequestBody FileNameDTO fileNameDTO) {
+
+        service.renameFile(filename, fileNameDTO.getName());
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Integer> getFilesList(
             @RequestParam("limit") int limit, @RequestHeader("auth-token") String authToken) {
-        Map<String, Integer> map = new HashMap<>();
-        //service.getFilesList
-        map.put("afileOne.txt", 23234342);
-        map.put("bfileTwo.jpg", 232342);
-        map.put("cfileThree.dat", 534534);
 
-        //сортируем мапу по ключу - имени файла и выбрасываем все значения больше limit
-        return map.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .limit(limit)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return service
+                .getFilesList(limit)
+                .stream()
+                .collect(Collectors.toMap(File::getFilename, f -> f.getFile().length));
     }
 
     @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String login(@RequestBody LoginFormDTO loginFormDTO) {
+
         //service.login
         return "{\"auth-token\":"+"12312312}";
     }
 
     @PostMapping (value = "/logout")
     public void logout(@RequestHeader("auth-token") String authToken) {
-        //service.updateFile
+
+        //service.logout
     }
 }

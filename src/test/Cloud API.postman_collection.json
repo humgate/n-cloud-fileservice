@@ -1,0 +1,1252 @@
+{
+	"info": {
+		"_postman_id": "42e887f8-f6c5-4740-9f7a-c94890d34679",
+		"name": "Cloud API collection",
+		"description": "Cloud API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "file",
+			"item": [
+				{
+					"name": "/file",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"description": "(Required) ",
+								"key": "auth-token",
+								"value": "ut non ad velit"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "hash",
+									"value": "pariatur proident sunt5",
+									"description": "undefined",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"description": "undefined",
+									"type": "file",
+									"src": "/D:/JProjects/netology/datasecurity/cloud-service/src/main/resources/schema.sql"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/file?filename=schema.sql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"file"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "schema.sql"
+								}
+							]
+						},
+						"description": "Upload file to server"
+					},
+					"response": [
+						{
+							"name": "Success upload",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "hash",
+											"value": "pariatur proident sunt ",
+											"description": "undefined",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"value": "non in",
+											"description": "undefined",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Error input data",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "hash",
+											"value": "pariatur proident sunt ",
+											"description": "undefined",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"value": "non in",
+											"description": "undefined",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Unauthorized error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "hash",
+											"value": "pariatur proident sunt ",
+											"description": "undefined",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"value": "non in",
+											"description": "undefined",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						}
+					]
+				},
+				{
+					"name": "/file",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"description": "(Required) ",
+								"key": "auth-token",
+								"value": "ut non ad velit"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/file?filename=schema.sql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"file"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "schema.sql"
+								}
+							]
+						},
+						"description": "Delete file"
+					},
+					"response": [
+						{
+							"name": "Success deleted",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Error input data",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Unauthorized error",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Error delet file",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						}
+					]
+				},
+				{
+					"name": "/file",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) ",
+								"key": "auth-token",
+								"value": "ut non ad velit"
+							},
+							{
+								"key": "Accept",
+								"value": "multipart/form-data"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/file?filename=schema.sql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"file"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "schema.sql"
+								}
+							]
+						},
+						"description": "Dowload file from cloud"
+					},
+					"response": [
+						{
+							"name": "Success deleted",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "multipart/form-data"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Error input data",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Unauthorized error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Error upload file",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						}
+					]
+				},
+				{
+					"name": "/file",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"description": "(Required) ",
+								"key": "auth-token",
+								"value": "ut non ad velit"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"edited_filename.txt\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/file?filename=filename.txt",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"file"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "filename.txt"
+								}
+							]
+						},
+						"description": "Edit file name"
+					},
+					"response": [
+						{
+							"name": "Success upload",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"ex eiusmod in Duis\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Error input data",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"ex eiusmod in Duis\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Unauthorized error",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"ex eiusmod in Duis\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Error upload file",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"ex eiusmod in Duis\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/file?fileName=ut non ad velit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"file"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "ut non ad velit"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						}
+					]
+				},
+				{
+					"name": "/list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) ",
+								"key": "auth-token",
+								"value": "ut non ad velit"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/list?limit=15",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "15",
+									"description": "Number requested items"
+								}
+							]
+						},
+						"description": "Get all files"
+					},
+					"response": [
+						{
+							"name": "Success get list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/list?limit=-25644267",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"list"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "-25644267"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"filename\": \"sint officia\",\n  \"size\": 7431147\n}"
+						},
+						{
+							"name": "Error input data",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/list?limit=-25644267",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"list"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "-25644267"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Unauthorized error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/list?limit=-25644267",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"list"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "-25644267"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						},
+						{
+							"name": "Error getting file list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/list?limit=-25644267",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"list"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "-25644267"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "/login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"login\": \"est Excepteur commodo eu dolor\",\n  \"password\": \"consequat in dolor\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Authorization method"
+					},
+					"response": [
+						{
+							"name": "Success authorization",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"login\": \"est Excepteur commodo eu dolor\",\n  \"password\": \"consequat in dolor\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"auth-token\": \"ut amet\"\n}"
+						},
+						{
+							"name": "Bad credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"login\": \"est Excepteur commodo eu dolor\",\n  \"password\": \"consequat in dolor\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+						}
+					]
+				},
+				{
+					"name": "/logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"description": "(Required) ",
+								"key": "auth-token",
+								"value": "ut non ad velit"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"logout"
+							]
+						},
+						"description": "Logout"
+					},
+					"response": [
+						{
+							"name": "Success logout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "auth-token",
+										"value": "ut non ad velit"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/logout",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5500/cloud",
+			"type": "string"
+		}
+	]
+}

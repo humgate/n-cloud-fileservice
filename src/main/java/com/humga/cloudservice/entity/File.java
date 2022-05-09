@@ -28,4 +28,15 @@ public class File {
         this.filename=filename;
         this.file = file;
     }
+
+    /**
+     * Additional custom setter returning File
+     *
+     * @param filename - file name
+     * @return this
+     */
+    public File setFilename(String filename) {
+        this.filename=filename;
+        return this;
+    }
 }
