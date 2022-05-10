@@ -4,16 +4,20 @@ package com.humga.cloudservice.controller;
 import com.humga.cloudservice.dto.FileNameDTO;
 import com.humga.cloudservice.dto.LoginFormDTO;
 import com.humga.cloudservice.entity.File;
+import com.humga.cloudservice.exceptions.BadRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.humga.cloudservice.service.CloudService;
 
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
@@ -81,7 +85,16 @@ public class CloudController {
     }
 
     @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String login(@RequestBody LoginFormDTO loginFormDTO) {
+    public String login(@RequestBody @Valid LoginFormDTO loginFormDTO, BindingResult errors) {
+        if (errors.hasErrors()) {
+            String msg = errors.getAllErrors()
+                    .stream()
+                    .map(x -> x.getDefaultMessage())
+                    .filter(Objects::nonNull)
+                    .reduce(String::concat)
+                    .orElse("Bad request");
+            throw new BadRequestException(msg);
+        }
 
         //service.login
         return "{\"auth-token\":"+"12312312}";
