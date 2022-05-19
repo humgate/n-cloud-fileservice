@@ -101,7 +101,7 @@ public class CloudController {
         }
 
         //service.login
-        return "{\"auth-token\":"+"12312312}";
+        return "{\"auth-token\":\"12312312\"}";
     }
 
     @PostMapping (value = "/logout")
