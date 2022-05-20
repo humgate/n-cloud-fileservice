@@ -2,6 +2,7 @@ package com.humga.cloudservice.controller;
 
 
 import com.humga.cloudservice.config.CustomCsrfTokenRepository;
+import com.humga.cloudservice.dto.FileDTO;
 import com.humga.cloudservice.dto.FileNameDTO;
 import com.humga.cloudservice.dto.LoginFormDTO;
 import com.humga.cloudservice.entity.File;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -97,13 +99,14 @@ public class CloudController {
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Integer> getFilesList(
+    public List<FileDTO> getFilesList(
             @RequestParam("limit") int limit, @RequestHeader("auth-token") String authToken) {
         System.out.println("authToken: " + authToken);
         return service
                 .getFilesList(limit)
                 .stream()
-                .collect(Collectors.toMap(File::getFilename, f -> f.getFile().length));
+                .map(f -> new FileDTO(f.getFilename(), f.getFile().length))
+                .collect(Collectors.toList());
     }
 
 
@@ -135,7 +138,7 @@ public class CloudController {
 
         CsrfToken csrfToken = csrfTokenRepo.generateToken(request);
         csrfTokenRepo.saveToken(csrfToken, request, response);
-        System.out.println("login auth-tocken: " + csrfToken.getToken());
+        System.out.println("login auth-token: " + csrfToken.getToken());
 
         //service.login
         return "{\"auth-token\":\"" + csrfToken.getToken() + "\"}";
