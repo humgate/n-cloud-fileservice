@@ -15,6 +15,7 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository{
     CustomCsrfTokenRepository () {
       this.repository = new HttpSessionCsrfTokenRepository();
       repository.setHeaderName("auth-token");
+      repository.setSessionAttributeName("_csrfToken");
     }
 
     @Override
