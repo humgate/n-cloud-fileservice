@@ -146,8 +146,6 @@ public class CloudController {
 
     @PostMapping (value = "/logout")
     public void logout(@RequestHeader("auth-token") String authToken, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        session.removeAttribute("_csrfToken");
-        //service.logout
+        csrfTokenRepo.removeToken(request);
     }
 }
