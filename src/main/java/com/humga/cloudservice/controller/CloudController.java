@@ -46,10 +46,8 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 @CrossOrigin(originPatterns = "http://localhost**", allowCredentials = "true") //CORS on
 @RequestMapping("/cloud")
 public class CloudController {
-
     private final CloudService service;
     private final CustomCsrfTokenRepository csrfTokenRepo;
-
     private final AuthenticationManager authenticationManager;
 
     public CloudController(CloudService service, CustomCsrfTokenRepository csrfTokenRepo, AuthenticationManager authenticationManager ) {
@@ -60,8 +58,8 @@ public class CloudController {
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void postFile(
-            @RequestParam("filename") String fileName, @RequestHeader("auth-token") String authToken,
-            @RequestParam("hash") String hash, @RequestParam("file") MultipartFile file) throws IOException {
+            @RequestParam("filename") String fileName, @RequestParam("hash") String hash,
+            @RequestParam("file") MultipartFile file) throws IOException {
 
         service.saveFile(fileName, file.getBytes());
     }
@@ -99,9 +97,7 @@ public class CloudController {
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<FileDTO> getFilesList(
-            @RequestParam("limit") int limit, @RequestHeader("auth-token") String authToken) {
-        System.out.println("authToken: " + authToken);
+    public List<FileDTO> getFilesList(@RequestParam("limit") int limit) {
         return service
                 .getFilesList(limit)
                 .stream()
@@ -109,11 +105,10 @@ public class CloudController {
                 .collect(Collectors.toList());
     }
 
-
-
     @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String login(HttpServletRequest request, HttpServletResponse response,
                         @RequestBody @Valid LoginFormDTO loginFormDTO, BindingResult errors) {
+        //проверка наличия ошибок валидации формата login
         if (errors.hasErrors()) {
             String msg = errors.getAllErrors()
                     .stream()
@@ -124,11 +119,14 @@ public class CloudController {
             throw new BadRequestException(msg);
         }
 
+        //аутентифицируем пользователя
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
         boolean isAuthenticated = authentication != null &&
                         !(authentication instanceof AnonymousAuthenticationToken) &&
                         authentication.isAuthenticated();
+
+        //Если пользователь аутентифицирован, сохраняем аутентификацию в сессии
         if (isAuthenticated) {
             SecurityContext sc = SecurityContextHolder.getContext();
             sc.setAuthentication(authentication);
@@ -136,16 +134,17 @@ public class CloudController {
             session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
         }
 
+        //генерируем csrf токен
         CsrfToken csrfToken = csrfTokenRepo.generateToken(request);
         csrfTokenRepo.saveToken(csrfToken, request, response);
         System.out.println("login auth-token: " + csrfToken.getToken());
 
-        //service.login
+        //отправляем токен фронт приложению
         return "{\"auth-token\":\"" + csrfToken.getToken() + "\"}";
     }
 
     @PostMapping (value = "/logout")
-    public void logout(@RequestHeader("auth-token") String authToken, HttpServletRequest request) {
+    public void logout(HttpServletRequest request) {
         csrfTokenRepo.removeToken(request);
     }
 }
