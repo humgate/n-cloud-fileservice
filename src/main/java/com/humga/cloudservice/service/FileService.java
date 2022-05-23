@@ -5,13 +5,12 @@ import com.humga.cloudservice.repository.CloudRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
-public class CloudService {
+public class FileService {
     private final CloudRepository repository;
 
-    public CloudService(CloudRepository repository) {
+    public FileService(CloudRepository repository) {
         this.repository = repository;
     }
 
