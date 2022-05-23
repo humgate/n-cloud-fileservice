@@ -1,6 +1,5 @@
 package com.humga.cloudservice.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,9 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 //@EnableAspectJAutoProxy
 public class ApplicationConfig extends WebSecurityConfigurerAdapter{
+    private final CustomCsrfTokenRepository csrfTokenRepo;
 
-    @Autowired
-    private CustomCsrfTokenRepository csrfTokenRepo;
+    public ApplicationConfig(CustomCsrfTokenRepository csrfTokenRepo) {
+        this.csrfTokenRepo = csrfTokenRepo;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
