@@ -1,4 +1,4 @@
-package com.humga.cloudservice.entity;
+package com.humga.cloudservice.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +23,9 @@ public class User {
 
     @Column(name= "name")
     private String name;
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
 }

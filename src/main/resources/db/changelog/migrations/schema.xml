@@ -71,6 +71,18 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet author="humga" id="005">
+        <createTable tableName="authorities">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="integer">
+                <constraints nullable="false" foreignKeyName="fk_user_id" references="users(id)"/>
+            </column>
+            <column name="authority" type="varchar(64)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
 
 

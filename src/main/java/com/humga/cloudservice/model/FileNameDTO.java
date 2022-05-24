@@ -1,4 +1,4 @@
-package com.humga.cloudservice.dto;
+package com.humga.cloudservice.model;
 
 import lombok.Data;
 

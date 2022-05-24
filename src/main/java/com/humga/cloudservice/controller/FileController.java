@@ -1,12 +1,9 @@
 package com.humga.cloudservice.controller;
 
 
-import com.humga.cloudservice.config.CustomCsrfTokenRepository;
-import com.humga.cloudservice.dto.FileInfoDTO;
-import com.humga.cloudservice.dto.FileNameDTO;
+import com.humga.cloudservice.model.FileInfoDTO;
+import com.humga.cloudservice.model.FileNameDTO;
 import org.springframework.http.MediaType;
-
-import org.springframework.security.authentication.AuthenticationManager;
 
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;

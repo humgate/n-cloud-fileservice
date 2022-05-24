@@ -1,7 +1,7 @@
 package com.humga.cloudservice.controller;
 
 import com.humga.cloudservice.config.CustomCsrfTokenRepository;
-import com.humga.cloudservice.dto.LoginFormDTO;
+import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.exceptions.BadRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

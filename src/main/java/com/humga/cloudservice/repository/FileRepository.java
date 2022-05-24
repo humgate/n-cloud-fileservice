@@ -1,6 +1,6 @@
 package com.humga.cloudservice.repository;
 
-import com.humga.cloudservice.entity.File;
+import com.humga.cloudservice.model.entity.File;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class CloudRepository {
+public class FileRepository {
     private final UserCrudRepository userRepo;
     private final FileCrudRepository fileRepo;
 
-    public CloudRepository(UserCrudRepository userRepo, FileCrudRepository fileRepo) {
+    public FileRepository(UserCrudRepository userRepo, FileCrudRepository fileRepo) {
         this.userRepo = userRepo;
         this.fileRepo = fileRepo;
     }

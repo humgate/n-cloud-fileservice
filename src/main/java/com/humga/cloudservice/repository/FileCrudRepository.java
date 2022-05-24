@@ -1,6 +1,6 @@
 package com.humga.cloudservice.repository;
 
-import com.humga.cloudservice.entity.File;
+import com.humga.cloudservice.model.entity.File;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.CrudRepository;

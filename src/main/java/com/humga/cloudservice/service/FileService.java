@@ -1,16 +1,16 @@
 package com.humga.cloudservice.service;
 
-import com.humga.cloudservice.entity.File;
-import com.humga.cloudservice.repository.CloudRepository;
+import com.humga.cloudservice.model.entity.File;
+import com.humga.cloudservice.repository.FileRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FileService {
-    private final CloudRepository repository;
+    private final FileRepository repository;
 
-    public FileService(CloudRepository repository) {
+    public FileService(FileRepository repository) {
         this.repository = repository;
     }
 
@@ -33,5 +33,4 @@ public class FileService {
     public List<File> getFilesList(int limit) {
         return repository.getFilesList(limit);
     }
-
 }
