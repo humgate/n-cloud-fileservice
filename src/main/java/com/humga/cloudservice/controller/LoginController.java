@@ -1,36 +1,36 @@
 package com.humga.cloudservice.controller;
 
-import com.humga.cloudservice.config.CustomCsrfTokenRepository;
+import com.humga.cloudservice.config.JwtTokenUtil;
 import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.exceptions.BadRequestException;
+import com.humga.cloudservice.model.entity.User;
+import com.humga.cloudservice.service.UserService;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Objects;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class LoginController {
-    private final CustomCsrfTokenRepository csrfTokenRepo;
+    private final JwtTokenUtil jwtTokenUtil;
+
+    private final UserService userService;
+
     private final AuthenticationManager authenticationManager;
 
-    public LoginController(CustomCsrfTokenRepository csrfTokenRepo, AuthenticationManager authenticationManager) {
-        this.csrfTokenRepo = csrfTokenRepo;
+    public LoginController(JwtTokenUtil jwtTokenUtil, UserService userService,
+                           AuthenticationManager authenticationManager) {
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userService = userService;
         this.authenticationManager = authenticationManager;
     }
 
@@ -49,31 +49,17 @@ public class LoginController {
         }
 
         //аутентифицируем пользователя
-        Authentication authentication = authenticationManager.authenticate(
+        Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
-        boolean isAuthenticated = authentication != null &&
-                !(authentication instanceof AnonymousAuthenticationToken) &&
-                authentication.isAuthenticated();
 
-        //Если пользователь аутентифицирован, сохраняем аутентификацию в сессии
-        if (isAuthenticated) {
-            SecurityContext sc = SecurityContextHolder.getContext();
-            sc.setAuthentication(authentication);
-            HttpSession session = request.getSession(true);
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-        }
+        //генерируем токен для логина с набором authorities полученным при аутентификации из БД
+        final String token = jwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
 
-        //генерируем csrf токен
-        CsrfToken csrfToken = csrfTokenRepo.generateToken(request);
-        csrfTokenRepo.saveToken(csrfToken, request, response);
-        System.out.println("login auth-token: " + csrfToken.getToken());
-
-        //отправляем токен фронт приложению
-        return "{\"auth-token\":\"" + csrfToken.getToken() + "\"}";
+        return "{\"auth-token\":\"" + token + "\"}";
     }
 
     @PostMapping (value = "/logout")
     public void logout(HttpServletRequest request) {
-        csrfTokenRepo.removeToken(request);
+
     }
 }

@@ -9,10 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class UserService implements UserDetailsService {
     private final UserCrudRepository userRepo;
     private final AuthorityCrudRepository authRepo;
@@ -23,9 +25,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.getUserByName(username).orElseThrow(
-                () -> new UsernameNotFoundException("Invalid username or password."));
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = findUser(login);
 
         List<Authority> authorities = authRepo.findAuthorityByUser(user);
 
@@ -34,6 +35,11 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
 
         return new org.springframework.security.core.userdetails.User(
-                user.getName(), user.getPassword(), grantedAuthorities);
+                user.getLogin(), user.getPassword(), grantedAuthorities);
+    }
+
+    public User findUser (String login) {
+        return userRepo.getUserByLogin(login).orElseThrow(
+                () -> new UsernameNotFoundException("Invalid username or password."));
     }
 }

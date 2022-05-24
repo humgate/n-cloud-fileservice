@@ -5,17 +5,18 @@ import com.humga.cloudservice.model.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.humga.cloudservice.model.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
-import static com.humga.cloudservice.model.Constants.SIGNING_KEY;
+import static com.humga.cloudservice.model.Constants.*;
 
 
 @Component
@@ -46,18 +47,14 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String generateToken(User user) {
-        return doGenerateToken(user.getName());
-    }
-
-    private String doGenerateToken(String subject) {
+    public String generateToken(String subject, Collection<? extends GrantedAuthority> authorities) {
 
         Claims claims = Jwts.claims().setSubject(subject);
-        claims.put("scopes", List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        claims.put("scopes", authorities);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuer("http://devglan.com")
+                .setIssuer(TOKEN_ISSUER)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS*1000))
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
