@@ -10,10 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface FileCrudRepository extends CrudRepository<File, Long> {
-    Optional<File> findFileByFilename(String filename);
+    Optional<File> findFileByFilenameAndUser_Login(String filename, String login);
 
-    /* Slice<T> возвращает одну страницу и не делает count(*) запрос, чтобы получить общее кол-во страниц.
-      Как па то что нам нужно для получения из базы на запрос /list c указанным лимитом на кол-во
-      возвращаемых записей */
-    Slice<File> findAll(Pageable pageable);
+    // Slice<T> возвращает одну страницу и не делает count(*) запрос, чтобы получить общее кол-во страниц.
+    Slice<File> findAllByUser_Login(String login, Pageable pageable);
 }

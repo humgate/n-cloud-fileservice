@@ -1,9 +1,8 @@
 package com.humga.cloudservice.controller;
 
-import com.humga.cloudservice.config.JwtTokenUtil;
+import com.humga.cloudservice.util.JwtTokenUtil;
 import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.exceptions.BadRequestException;
-import com.humga.cloudservice.model.entity.User;
 import com.humga.cloudservice.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;

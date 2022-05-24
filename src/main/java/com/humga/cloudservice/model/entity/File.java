@@ -38,4 +38,9 @@ public class File {
         this.filename=filename;
         return this;
     }
+
+    public File setUser(User user) {
+        this.user = user;
+        return this;
+    }
 }

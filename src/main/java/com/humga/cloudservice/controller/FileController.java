@@ -5,6 +5,8 @@ import com.humga.cloudservice.model.FileInfoDTO;
 import com.humga.cloudservice.model.FileNameDTO;
 import org.springframework.http.MediaType;
 
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -26,7 +28,6 @@ import java.util.zip.Checksum;
 @RequestMapping("/cloud")
 public class FileController {
     private final FileService service;
-
     public FileController(FileService service) {
         this.service = service;
     }
@@ -35,6 +36,7 @@ public class FileController {
     public void postFile(
             @RequestParam("filename") String fileName, @RequestBody MultipartFile file, ModelMap modelMap
     ) throws IOException {
+        SecurityContext sc = SecurityContextHolder.getContext();
         service.saveFile(fileName, file.getBytes());
     }
 

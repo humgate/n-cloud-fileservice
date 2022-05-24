@@ -1,4 +1,4 @@
-package com.humga.cloudservice.dbinit;
+package com.humga.cloudservice.util;
 
 
 import com.humga.cloudservice.model.entity.Authority;
@@ -10,11 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.StreamSupport;
-
 
 /**
- * Инициализирует authority пользователей в базе если таблица пользователей пуста
+ * Инициализирует тестовых пользователей и authority пользователей в базе если таблица пользователей пуста
  *
  */
 @Component
