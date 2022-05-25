@@ -39,11 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Autowired
-//    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService)
-//                .passwordEncoder(encoder());
-//    }
 
     @Bean
     public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
@@ -58,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                     .disable()
                 .authorizeRequests()
-                    .antMatchers("/token/*", "/cloud/login").permitAll()
+                    .antMatchers("/cloud/login").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
