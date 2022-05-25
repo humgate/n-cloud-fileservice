@@ -15,7 +15,6 @@ import static com.humga.cloudservice.model.Constants.TOKEN_BLACKLIST_MAX_SIZE;
 public class TokenBlackList {
     private final ExpiringMap<String, LocalDateTime> tokenBlackList;
 
-
     public TokenBlackList() {
         tokenBlackList = ExpiringMap.builder()
                 .maxSize(TOKEN_BLACKLIST_MAX_SIZE)

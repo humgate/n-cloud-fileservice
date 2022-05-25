@@ -1,6 +1,7 @@
 package com.humga.cloudservice.config;
 
 import com.humga.cloudservice.util.JwtTokenUtil;
+import com.humga.cloudservice.util.TokenBlackList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,15 +22,14 @@ import javax.annotation.Resource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource(name = "userService")
-    private UserDetailsService userDetailsService;
-
-    private final JwtTokenUtil jwtTokenUtil;
-
+    private final UserDetailsService userDetailsService;
+    private final TokenBlackList tokenBlackList;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    public WebSecurityConfig(JwtTokenUtil jwtTokenUtil, JwtAuthenticationEntryPoint unauthorizedHandler) {
-        this.jwtTokenUtil = jwtTokenUtil;
+    public WebSecurityConfig(UserDetailsService userDetailsService, TokenBlackList tokenBlackList,
+                             JwtAuthenticationEntryPoint unauthorizedHandler) {
+        this.userDetailsService = userDetailsService;
+        this.tokenBlackList = tokenBlackList;
         this.unauthorizedHandler = unauthorizedHandler;
     }
 
@@ -39,10 +39,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
     @Bean
     public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationFilter(userDetailsService, jwtTokenUtil);
+        return new JwtAuthenticationFilter(userDetailsService, tokenBlackList);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder encoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -60,10 +64,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Bean
-    public BCryptPasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
     }
 }

@@ -2,8 +2,11 @@ package com.humga.cloudservice.util;
 
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,14 +21,9 @@ import static com.humga.cloudservice.model.Constants.*;
 
 @Component
 public class JwtTokenUtil implements Serializable {
+    protected static final Log logger = LogFactory.getLog("JwtTokenUtil");
 
-    private final TokenBlackList tokenBlackList;
-
-    public JwtTokenUtil(TokenBlackList tokenBlackList) {
-        this.tokenBlackList = tokenBlackList;
-    }
-
-    public String getUsernameFromToken(String token) {
+    public static String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
@@ -45,12 +43,12 @@ public class JwtTokenUtil implements Serializable {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    private static Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
-    public String generateToken(String subject, Collection<? extends GrantedAuthority> authorities) {
+    public static String generateToken(String subject, Collection<? extends GrantedAuthority> authorities) {
 
         Claims claims = Jwts.claims().setSubject(subject);
         claims.put("scopes", authorities);
@@ -64,11 +62,21 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public static void validateToken(String token, UserDetails userDetails, TokenBlackList tokenBlackList) throws
+            JwtException {
+
         final String username = getUsernameFromToken(token);
-        return (
-                username.equals(userDetails.getUsername())
-                && !isTokenExpired(token))
-                && !tokenBlackList.contains(token);
+
+        if (!username.equals(userDetails.getUsername())) {
+            throw new JwtException("Token username not found: " + username);
+        }
+
+        if (isTokenExpired(token)) {
+            throw new JwtException("Token for username expired: " + username);
+        }
+
+        if (tokenBlackList.contains(token)) {
+            throw new JwtException("Blacklisted token received for: " + username);
+        }
     }
 }
