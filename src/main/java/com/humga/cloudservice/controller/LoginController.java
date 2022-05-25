@@ -8,13 +8,18 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Objects;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
@@ -50,6 +55,10 @@ public class LoginController {
         //аутентифицируем пользователя
         Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
+        HttpSession session = request.getSession(true);
+        SecurityContext sc = SecurityContextHolder.getContext();
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+        sc.setAuthentication(authentication);
 
         //генерируем токен для логина с набором authorities полученным при аутентификации из БД
         final String token = jwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
@@ -59,6 +68,6 @@ public class LoginController {
 
     @PostMapping (value = "/logout")
     public void logout(HttpServletRequest request) {
-
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 }
