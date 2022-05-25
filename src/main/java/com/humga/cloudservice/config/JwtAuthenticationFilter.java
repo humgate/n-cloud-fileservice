@@ -1,15 +1,19 @@
 package com.humga.cloudservice.config;
 
+import com.humga.cloudservice.util.AutoExpiringBlackList;
 import com.humga.cloudservice.util.JwtTokenUtil;
 import com.humga.cloudservice.util.TokenBlackList;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,19 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.humga.cloudservice.model.Constants.HEADER_STRING;
-import static com.humga.cloudservice.model.Constants.TOKEN_PREFIX;
+import static com.humga.cloudservice.model.Constants.*;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    private final UserDetailsService userDetailsService;
-
-    private final TokenBlackList tokenBlackList;
-
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, TokenBlackList tokenBlackList) {
-        this.userDetailsService = userDetailsService;
-        this.tokenBlackList = tokenBlackList;
-    }
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private AutoExpiringBlackList tokenBlackList;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

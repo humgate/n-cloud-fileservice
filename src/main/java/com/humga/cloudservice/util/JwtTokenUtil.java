@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -18,8 +17,6 @@ import java.util.function.Function;
 
 import static com.humga.cloudservice.model.Constants.*;
 
-
-@Component
 public class JwtTokenUtil implements Serializable {
     protected static final Log logger = LogFactory.getLog("JwtTokenUtil");
 
@@ -62,8 +59,8 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
-    public static void validateToken(String token, UserDetails userDetails, TokenBlackList tokenBlackList) throws
-            JwtException {
+    public static void validateToken(
+            String token, UserDetails userDetails, AutoExpiringBlackList autoExpiringBlackList) throws JwtException {
 
         final String username = getUsernameFromToken(token);
 
@@ -75,7 +72,7 @@ public class JwtTokenUtil implements Serializable {
             throw new JwtException("Token for username expired: " + username);
         }
 
-        if (tokenBlackList.contains(token)) {
+        if (autoExpiringBlackList.contains(token)) {
             throw new JwtException("Blacklisted token received for: " + username);
         }
     }

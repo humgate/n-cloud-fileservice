@@ -1,6 +1,6 @@
 package com.humga.cloudservice.config;
 
-import com.humga.cloudservice.util.JwtTokenUtil;
+import com.humga.cloudservice.util.AutoExpiringBlackList;
 import com.humga.cloudservice.util.TokenBlackList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,25 +11,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.annotation.Resource;
+import static com.humga.cloudservice.model.Constants.TOKEN_BLACKLIST_MAX_SIZE;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final UserDetailsService userDetailsService;
-    private final TokenBlackList tokenBlackList;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, TokenBlackList tokenBlackList,
-                             JwtAuthenticationEntryPoint unauthorizedHandler) {
-        this.userDetailsService = userDetailsService;
-        this.tokenBlackList = tokenBlackList;
+    public WebSecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler) {
         this.unauthorizedHandler = unauthorizedHandler;
     }
 
@@ -40,13 +33,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationFilter(userDetailsService, tokenBlackList);
+    public JwtAuthenticationFilter authenticationTokenFilterBean() {
+        return new JwtAuthenticationFilter();
     }
 
     @Bean
-    public BCryptPasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
+    public AutoExpiringBlackList autoExpiringBlackListBean() {
+        return new TokenBlackList(TOKEN_BLACKLIST_MAX_SIZE);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder encoder() { return new BCryptPasswordEncoder();
     }
 
     @Override

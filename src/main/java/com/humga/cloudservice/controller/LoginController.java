@@ -1,10 +1,10 @@
 package com.humga.cloudservice.controller;
 
+import com.humga.cloudservice.util.AutoExpiringBlackList;
 import com.humga.cloudservice.util.JwtTokenUtil;
 import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.exceptions.BadRequestException;
-import com.humga.cloudservice.service.UserService;
-import com.humga.cloudservice.util.TokenBlackList;
+import com.humga.cloudservice.util.Util;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.humga.cloudservice.model.Constants.HEADER_STRING;
@@ -25,16 +26,12 @@ import static com.humga.cloudservice.model.Constants.TOKEN_PREFIX;
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class LoginController {
-    private final JwtTokenUtil jwtTokenUtil;
-
-    private final TokenBlackList tokenBlackList;
+    private final AutoExpiringBlackList tokenBlackList;
 
     private final AuthenticationManager authenticationManager;
 
-    public LoginController(JwtTokenUtil jwtTokenUtil, TokenBlackList blackList, UserService userService,
-                           AuthenticationManager authenticationManager) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.tokenBlackList = blackList;
+    public LoginController(AutoExpiringBlackList tokenBlackList, AuthenticationManager authenticationManager) {
+        this.tokenBlackList = tokenBlackList;
         this.authenticationManager = authenticationManager;
     }
 
@@ -57,13 +54,17 @@ public class LoginController {
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
 
         //генерируем токен для логина с набором authorities полученным при аутентификации из БД
-        final String token = jwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
+        final String token = JwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
 
         return "{\"auth-token\":\"" + token + "\"}";
     }
 
     @PostMapping (value = "/logout")
     public void logout(HttpServletRequest request) {
-        tokenBlackList.add(request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX,""));
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        String token = request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX,"");
+        LocalDateTime expiration = Util.convertToLocalDateTime(JwtTokenUtil.getExpirationDateFromToken(token));
+
+        tokenBlackList.add(token, login, expiration);
     }
 }
