@@ -19,20 +19,26 @@ import static com.humga.cloudservice.model.Constants.*;
 @Component
 public class JwtTokenUtil implements Serializable {
 
+    private final TokenBlackList tokenBlackList;
+
+    public JwtTokenUtil(TokenBlackList tokenBlackList) {
+        this.tokenBlackList = tokenBlackList;
+    }
+
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public Date getExpirationDateFromToken(String token) {
+    public static Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    private static Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(SIGNING_KEY)
                 .parseClaimsJws(token)
@@ -61,8 +67,8 @@ public class JwtTokenUtil implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (
-              username.equals(userDetails.getUsername())
-                    && !isTokenExpired(token));
+                username.equals(userDetails.getUsername())
+                && !isTokenExpired(token))
+                && !tokenBlackList.contains(token);
     }
-
 }

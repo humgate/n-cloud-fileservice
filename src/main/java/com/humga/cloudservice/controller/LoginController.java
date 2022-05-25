@@ -4,10 +4,12 @@ import com.humga.cloudservice.util.JwtTokenUtil;
 import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.exceptions.BadRequestException;
 import com.humga.cloudservice.service.UserService;
+import com.humga.cloudservice.util.TokenBlackList;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,20 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Objects;
 
+import static com.humga.cloudservice.model.Constants.HEADER_STRING;
+import static com.humga.cloudservice.model.Constants.TOKEN_PREFIX;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class LoginController {
     private final JwtTokenUtil jwtTokenUtil;
 
-    private final UserService userService;
+    private final TokenBlackList tokenBlackList;
 
     private final AuthenticationManager authenticationManager;
 
-    public LoginController(JwtTokenUtil jwtTokenUtil, UserService userService,
+    public LoginController(JwtTokenUtil jwtTokenUtil, TokenBlackList blackList, UserService userService,
                            AuthenticationManager authenticationManager) {
         this.jwtTokenUtil = jwtTokenUtil;
-        this.userService = userService;
+        this.tokenBlackList = blackList;
         this.authenticationManager = authenticationManager;
     }
 
@@ -59,6 +64,6 @@ public class LoginController {
 
     @PostMapping (value = "/logout")
     public void logout(HttpServletRequest request) {
-
+        tokenBlackList.add(request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX,""));
     }
 }
