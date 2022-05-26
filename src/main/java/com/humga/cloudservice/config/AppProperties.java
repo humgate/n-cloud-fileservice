@@ -1,16 +1,21 @@
 package com.humga.cloudservice.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
-
-@Configuration
-@ConfigurationProperties(prefix = "app.config")
+@ConfigurationProperties(prefix = "app.config.token")
+@ConstructorBinding
+@AllArgsConstructor
+@Getter
 public class AppProperties {
-    public static String TOKEN_ISSUER;
-    public static long ACCESS_TOKEN_VALIDITY_SECONDS;
-    public static String SIGNING_KEY;
-    public static String TOKEN_PREFIX;
-    public static String HEADER_STRING;
-    public static int TOKEN_BLACKLIST_MAX_SIZE;
+    private final String issuer;
+    private final long validitySeconds;
+    private final String signingKey;
+    private final String prefix;
+    private final String header;
+    private final int blacklistMaxSize;
 }
+
+

@@ -1,5 +1,6 @@
 package com.humga.cloudservice.controller;
 
+import com.humga.cloudservice.config.AppProperties;
 import com.humga.cloudservice.security.AutoExpiringBlackList;
 import com.humga.cloudservice.security.JwtTokenUtil;
 import com.humga.cloudservice.model.LoginFormDTO;
@@ -19,20 +20,22 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.humga.cloudservice.config.AppProperties.HEADER_STRING;
-import static com.humga.cloudservice.config.AppProperties.TOKEN_PREFIX;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class LoginController {
     private final AutoExpiringBlackList tokenBlackList;
-
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AppProperties properties;
 
-    public LoginController(AutoExpiringBlackList tokenBlackList, AuthenticationManager authenticationManager) {
+    public LoginController(AutoExpiringBlackList tokenBlackList, AuthenticationManager authenticationManager,
+                           JwtTokenUtil jwtTokenUtil, AppProperties properties) {
         this.tokenBlackList = tokenBlackList;
         this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.properties = properties;
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +57,7 @@ public class LoginController {
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
 
         //генерируем токен для логина с набором authorities полученным при аутентификации из БД
-        final String token = JwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
+        final String token = jwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
 
         return "{\"auth-token\":\"" + token + "\"}";
     }
@@ -62,8 +65,8 @@ public class LoginController {
     @PostMapping (value = "/logout")
     public void logout(HttpServletRequest request) {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        String token = request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX,"");
-        LocalDateTime expiration = Util.convertToLocalDateTime(JwtTokenUtil.getExpirationDateFromToken(token));
+        String token = request.getHeader(properties.getHeader()).replace(properties.getPrefix(), "");
+        LocalDateTime expiration = Util.convertToLocalDateTime(jwtTokenUtil.getExpirationDateFromToken(token));
 
         tokenBlackList.add(token, login, expiration);
     }
