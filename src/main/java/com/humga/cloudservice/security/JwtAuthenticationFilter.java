@@ -1,7 +1,5 @@
 package com.humga.cloudservice.security;
 
-import com.humga.cloudservice.security.AutoExpiringBlackList;
-import com.humga.cloudservice.security.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureException;
@@ -19,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.humga.cloudservice.model.Constants.*;
+import static com.humga.cloudservice.util.Constants.*;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired

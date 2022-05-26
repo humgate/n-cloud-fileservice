@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
 
-import static com.humga.cloudservice.model.Constants.*;
+import static com.humga.cloudservice.util.Constants.*;
 
 public class JwtTokenUtil implements Serializable {
     protected static final Log logger = LogFactory.getLog("JwtTokenUtil");

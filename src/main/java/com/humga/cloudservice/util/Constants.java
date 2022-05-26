@@ -1,4 +1,4 @@
-package com.humga.cloudservice.model;
+package com.humga.cloudservice.util;
 
 public class Constants {
     public static final String TOKEN_ISSUER = "http://humgaissuer.com";

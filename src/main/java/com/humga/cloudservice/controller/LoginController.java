@@ -19,8 +19,8 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.humga.cloudservice.model.Constants.HEADER_STRING;
-import static com.humga.cloudservice.model.Constants.TOKEN_PREFIX;
+import static com.humga.cloudservice.util.Constants.HEADER_STRING;
+import static com.humga.cloudservice.util.Constants.TOKEN_PREFIX;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")

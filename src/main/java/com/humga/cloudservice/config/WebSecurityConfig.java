@@ -16,7 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.humga.cloudservice.model.Constants.TOKEN_BLACKLIST_MAX_SIZE;
+import static com.humga.cloudservice.util.Constants.TOKEN_BLACKLIST_MAX_SIZE;
 
 @Configuration
 @EnableWebSecurity
