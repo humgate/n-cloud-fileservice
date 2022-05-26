@@ -1,7 +1,7 @@
 package com.humga.cloudservice.controller;
 
-import com.humga.cloudservice.util.AutoExpiringBlackList;
-import com.humga.cloudservice.util.JwtTokenUtil;
+import com.humga.cloudservice.security.AutoExpiringBlackList;
+import com.humga.cloudservice.security.JwtTokenUtil;
 import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.exceptions.BadRequestException;
 import com.humga.cloudservice.util.Util;

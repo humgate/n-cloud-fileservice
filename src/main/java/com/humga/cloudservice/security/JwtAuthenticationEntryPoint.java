@@ -1,4 +1,4 @@
-package com.humga.cloudservice.config;
+package com.humga.cloudservice.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

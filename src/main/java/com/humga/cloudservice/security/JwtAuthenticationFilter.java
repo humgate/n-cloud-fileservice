@@ -1,19 +1,16 @@
-package com.humga.cloudservice.config;
+package com.humga.cloudservice.security;
 
-import com.humga.cloudservice.util.AutoExpiringBlackList;
-import com.humga.cloudservice.util.JwtTokenUtil;
-import com.humga.cloudservice.util.TokenBlackList;
+import com.humga.cloudservice.security.AutoExpiringBlackList;
+import com.humga.cloudservice.security.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;

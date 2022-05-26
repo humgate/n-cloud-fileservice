@@ -1,4 +1,4 @@
-package com.humga.cloudservice.util;
+package com.humga.cloudservice.security;
 
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;

@@ -1,7 +1,9 @@
 package com.humga.cloudservice.config;
 
-import com.humga.cloudservice.util.AutoExpiringBlackList;
-import com.humga.cloudservice.util.TokenBlackList;
+import com.humga.cloudservice.security.AutoExpiringBlackList;
+import com.humga.cloudservice.security.JwtAuthenticationEntryPoint;
+import com.humga.cloudservice.security.JwtAuthenticationFilter;
+import com.humga.cloudservice.security.TokenBlackList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
