@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "app.config.token_issuer",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.config.access_token_validity_seconds",
+      "type": "java.lang.Integer"
+     },
+    {
+      "name": "app.config.signing_key",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.config.token_prefix",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.config.header_string",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.config.token_blacklist_max_size",
+      "type": "java.lang.Integer"
+    }
+  ]
+}
