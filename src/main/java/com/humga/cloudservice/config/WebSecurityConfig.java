@@ -4,8 +4,13 @@ import com.humga.cloudservice.security.AutoExpiringBlackList;
 import com.humga.cloudservice.security.JwtAuthenticationEntryPoint;
 import com.humga.cloudservice.security.JwtAuthenticationFilter;
 import com.humga.cloudservice.security.TokenBlackList;
+import liquibase.pro.packaged.A;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -16,7 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.humga.cloudservice.util.Constants.TOKEN_BLACKLIST_MAX_SIZE;
+import static com.humga.cloudservice.config.AppProperties.TOKEN_BLACKLIST_MAX_SIZE;
 
 @Configuration
 @EnableWebSecurity
@@ -39,10 +44,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
-    @Bean
-    public AutoExpiringBlackList autoExpiringBlackListBean() {
-        return new TokenBlackList(TOKEN_BLACKLIST_MAX_SIZE);
-    }
+//    @Bean
+//    public AppProperties appProperties() {
+//        return new AppProperties();
+//    }
+
+//    @Bean
+//    public AutoExpiringBlackList autoExpiringBlackListBean() {
+//        return new TokenBlackList();
+//    }
 
     @Bean
     public BCryptPasswordEncoder encoder() { return new BCryptPasswordEncoder();

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.humga.cloudservice.util.Constants.*;
+import static com.humga.cloudservice.config.AppProperties.*;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
