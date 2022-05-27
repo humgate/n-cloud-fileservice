@@ -1,6 +1,7 @@
 package com.humga.cloudservice.controller;
 
 
+import com.humga.cloudservice.model.FileDTO;
 import com.humga.cloudservice.model.FileInfoDTO;
 import com.humga.cloudservice.model.FileNameDTO;
 import org.springframework.http.MediaType;
@@ -32,12 +33,9 @@ public class FileController {
         this.service = service;
     }
 
-    @PostMapping(value = "/file")
-    public void postFile(
-            @RequestParam("filename") String fileName, @RequestBody MultipartFile file, ModelMap modelMap
-    ) throws IOException {
-        SecurityContext sc = SecurityContextHolder.getContext();
-        service.saveFile(fileName, file.getBytes());
+    @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void postFile(@RequestParam("filename") String fileName, @ModelAttribute FileDTO file) throws IOException {
+        service.saveFile(fileName, file.getFile().getBytes());
     }
 
     @DeleteMapping(value = "/file")
@@ -47,13 +45,10 @@ public class FileController {
 
     @GetMapping(value = "/file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public MultiValueMap<String, Object> getFile(@RequestParam("filename") String filename) {
-
-        //класс для подсчета чек-суммы файла
-        Checksum crc32 = new CRC32();
-        //service.getFile
-
         byte[] bytes = service.getFile(filename);
-        //обновляем(вычисляем) чек-сумму на основе байтового массива полученного из файла
+
+        //вычисляем чек-сумму на основе байтового массива полученного из файла
+        Checksum crc32 = new CRC32();
         crc32.update(bytes, 0, bytes.length);
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
         formData.add("hash", crc32.getValue());
