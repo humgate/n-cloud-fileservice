@@ -21,14 +21,11 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
-    private final AutoExpiringBlackList tokenBlackList;
     private final JwtTokenUtil jwtTokenUtil;
     private final AppProperties properties;
 
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, AutoExpiringBlackList tokenBlackList,
-                                   JwtTokenUtil jwtTokenUtil, AppProperties properties) {
+    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, AppProperties properties) {
         this.userDetailsService = userDetailsService;
-        this.tokenBlackList = tokenBlackList;
         this.jwtTokenUtil = jwtTokenUtil;
         this.properties = properties;
     }
@@ -39,13 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(properties.getHeader());
         String username = null;
-        String authToken = null;
+        String token = null;
 
         if (header != null && header.startsWith(properties.getPrefix())) {
-            authToken = header.replace(properties.getPrefix(), "");
+            token = jwtTokenUtil.getTokenFromHeader(header);
 
             try {
-                username = jwtTokenUtil.getUsernameFromToken(authToken);
+                username = jwtTokenUtil.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
                 logger.error("An error occured during getting username from token");
             } catch (ExpiredJwtException e) {
@@ -60,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             try {
-                jwtTokenUtil.validateToken(authToken, userDetails, tokenBlackList);
+                jwtTokenUtil.validateToken(token, userDetails);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

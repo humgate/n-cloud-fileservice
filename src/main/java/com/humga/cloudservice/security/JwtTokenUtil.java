@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
@@ -22,9 +24,11 @@ public class JwtTokenUtil implements Serializable {
     protected static final Log logger = LogFactory.getLog("JwtTokenUtil");
 
     private final AppProperties properties;
+    private final AutoExpiringBlackList tokenBlackList;
 
     public JwtTokenUtil(AppProperties properties) {
         this.properties = properties;
+        this.tokenBlackList = new TokenBlackList(properties.getBlacklistMaxSize());
     }
 
     public String getUsernameFromToken(String token) {
@@ -66,8 +70,7 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
-    public void validateToken(
-            String token, UserDetails userDetails, AutoExpiringBlackList autoExpiringBlackList) throws JwtException {
+    public void validateToken(String token, UserDetails userDetails) throws JwtException {
 
         final String username = getUsernameFromToken(token);
 
@@ -79,8 +82,26 @@ public class JwtTokenUtil implements Serializable {
             throw new JwtException("Token for username expired: " + username);
         }
 
-        if (autoExpiringBlackList.contains(token)) {
+        if (tokenBlackList.contains(token)) {
             throw new JwtException("Blacklisted token received for: " + username);
         }
     }
+
+    public void invalidateToken (String token) {
+        tokenBlackList.add(
+                token,
+                getUsernameFromToken(token),
+                convertToLocalDateTime(getExpirationDateFromToken(token)));
+    }
+
+    private LocalDateTime convertToLocalDateTime(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
+
+    public String getTokenFromHeader (String header) {
+        return header.replace(properties.getPrefix(), "");
+    }
 }
+

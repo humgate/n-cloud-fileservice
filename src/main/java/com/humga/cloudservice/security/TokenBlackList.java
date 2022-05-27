@@ -10,14 +10,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-
-@Component
 public class TokenBlackList implements AutoExpiringBlackList {
     private final ExpiringMap<String, Object> tokenBlackList;
 
-    public TokenBlackList(AppProperties properties) {
+    public TokenBlackList(int maxSize) {
         tokenBlackList = ExpiringMap.builder()
-                .maxSize(properties.getBlacklistMaxSize())
+                .maxSize(maxSize)
                 .expirationPolicy(ExpirationPolicy.CREATED)
                 .variableExpiration()
                 .build();
