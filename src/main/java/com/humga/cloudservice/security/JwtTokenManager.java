@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,13 +21,13 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenManager implements Serializable {
     protected static final Log logger = LogFactory.getLog("JwtTokenUtil");
 
     private final AppProperties properties;
     private final AutoExpiringBlackList tokenBlackList;
 
-    public JwtTokenUtil(AppProperties properties) {
+    public JwtTokenManager(AppProperties properties) {
         this.properties = properties;
         this.tokenBlackList = new TokenBlackList(properties.getBlacklistMaxSize());
     }
@@ -100,8 +101,12 @@ public class JwtTokenUtil implements Serializable {
                 .toLocalDateTime();
     }
 
-    public String getTokenFromHeader (String header) {
+    public String getTokenFromHeader(String header) {
         return header.replace(properties.getPrefix(), "");
+    }
+
+    public String getTokenFromRequest(HttpServletRequest request) {
+        return getTokenFromHeader(request.getHeader(properties.getHeader()));
     }
 }
 

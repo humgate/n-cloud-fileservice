@@ -21,12 +21,12 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenManager tokenManager;
     private final AppProperties properties;
 
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, AppProperties properties) {
+    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenManager tokenManager, AppProperties properties) {
         this.userDetailsService = userDetailsService;
-        this.jwtTokenUtil = jwtTokenUtil;
+        this.tokenManager = tokenManager;
         this.properties = properties;
     }
 
@@ -39,10 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
 
         if (header != null && header.startsWith(properties.getPrefix())) {
-            token = jwtTokenUtil.getTokenFromHeader(header);
+            token = tokenManager.getTokenFromHeader(header);
 
             try {
-                username = jwtTokenUtil.getUsernameFromToken(token);
+                username = tokenManager.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
                 logger.error("An error occured during getting username from token");
             } catch (ExpiredJwtException e) {
@@ -57,12 +57,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             try {
-                jwtTokenUtil.validateToken(token, userDetails);
+                tokenManager.validateToken(token, userDetails);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
                 logger.info("authenticated user " + username + ", setting security context");
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JwtException e) {
                 logger.warn("Invalid token for " + username + ". " + e.getMessage());

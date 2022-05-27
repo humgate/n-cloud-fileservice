@@ -1,4 +1,4 @@
-package com.humga.cloudservice.util;
+package com.humga.cloudservice.init;
 
 
 import com.humga.cloudservice.model.entity.Authority;

@@ -1,13 +1,13 @@
 package com.humga.cloudservice.controller;
 
-import com.humga.cloudservice.config.AppProperties;
 import com.humga.cloudservice.exceptions.BadRequestException;
 import com.humga.cloudservice.model.LoginFormDTO;
-import com.humga.cloudservice.security.JwtTokenUtil;
+import com.humga.cloudservice.security.JwtTokenManager;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +22,11 @@ import java.util.Objects;
 @RequestMapping("/cloud")
 public class LoginController {
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final AppProperties properties;
+    private final JwtTokenManager tokenManager;
 
-    public LoginController(AuthenticationManager authenticationManager,
-                           JwtTokenUtil jwtTokenUtil, AppProperties properties) {
+    public LoginController(AuthenticationManager authenticationManager, JwtTokenManager tokenManager) {
         this.authenticationManager = authenticationManager;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.properties = properties;
+        this.tokenManager = tokenManager;
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,16 +47,15 @@ public class LoginController {
         Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
 
-        //генерируем токен для логина с набором authorities полученным при аутентификации из БД
-        final String token = jwtTokenUtil.generateToken(authentication.getName(), authentication.getAuthorities());
+        //генерируем токен для логина с набором authorities, полученным при аутентификации из БД
+        final String token = tokenManager.generateToken(authentication.getName(), authentication.getAuthorities());
 
         return "{\"auth-token\":\"" + token + "\"}";
     }
 
     @PostMapping (value = "/logout")
     public void logout(HttpServletRequest request) {
-        String header = request.getHeader(properties.getHeader());
-        String token = jwtTokenUtil.getTokenFromHeader(header);
-        jwtTokenUtil.invalidateToken(token);
+        String token = tokenManager.getTokenFromRequest(request);
+        tokenManager.invalidateToken(token);
     }
 }

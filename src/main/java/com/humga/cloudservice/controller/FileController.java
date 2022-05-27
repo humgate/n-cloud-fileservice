@@ -25,7 +25,7 @@ import java.util.zip.Checksum;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true") //CORS on
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class FileController {
     private final FileService service;
@@ -35,17 +35,17 @@ public class FileController {
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void postFile(@RequestParam("filename") String fileName, @ModelAttribute FileDTO file) throws IOException {
-        service.saveFile(fileName, file.getFile().getBytes());
+        service.saveFile(fileName, file.getFile().getBytes(), getCurrentUserLogin());
     }
 
     @DeleteMapping(value = "/file")
     public void deleteFile(@RequestParam("filename") String filename) {
-        service.deleteFile(filename);
+        service.deleteFile(filename, getCurrentUserLogin());
     }
 
     @GetMapping(value = "/file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public MultiValueMap<String, Object> getFile(@RequestParam("filename") String filename) {
-        byte[] bytes = service.getFile(filename);
+        byte[] bytes = service.getFile(filename, getCurrentUserLogin());
 
         //вычисляем чек-сумму на основе байтового массива полученного из файла
         Checksum crc32 = new CRC32();
@@ -59,15 +59,19 @@ public class FileController {
     @PutMapping(value = "/file", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateFile(@RequestParam("filename") String filename, @RequestBody FileNameDTO fileNameDTO) {
         System.out.println(fileNameDTO.getFilename());
-        service.renameFile(filename, fileNameDTO.getFilename());
+        service.renameFile(filename, fileNameDTO.getFilename(), getCurrentUserLogin());
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<FileInfoDTO> getFilesList(@RequestParam("limit") int limit) {
         return service
-                .getFilesList(limit)
+                .getFilesList(limit, getCurrentUserLogin())
                 .stream()
                 .map(f -> new FileInfoDTO(f.getFilename(), f.getFile().length))
                 .collect(Collectors.toList());
+    }
+
+    private String getCurrentUserLogin()  {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
