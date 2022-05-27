@@ -1,5 +1,6 @@
 package com.humga.cloudservice.controller;
 
+import com.humga.cloudservice.config.AppProperties;
 import com.humga.cloudservice.exceptions.BadRequestException;
 import com.humga.cloudservice.model.LoginFormDTO;
 import com.humga.cloudservice.security.JwtTokenManager;
@@ -7,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,34 +23,30 @@ import java.util.Objects;
 public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenManager tokenManager;
+    private final AppProperties properties;
 
-    public LoginController(AuthenticationManager authenticationManager, JwtTokenManager tokenManager) {
+    public LoginController(AuthenticationManager authenticationManager, JwtTokenManager tokenManager,
+                           AppProperties properties) {
         this.authenticationManager = authenticationManager;
         this.tokenManager = tokenManager;
+        this.properties = properties;
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String login(HttpServletRequest request, HttpServletResponse response,
                         @RequestBody @Valid LoginFormDTO loginFormDTO, BindingResult errors) {
-        //проверка наличия ошибок валидации формата login
+
         if (errors.hasErrors()) {
-            String msg = errors.getAllErrors()
-                    .stream()
-                    .map(x -> x.getDefaultMessage())
-                    .filter(Objects::nonNull)
-                    .reduce(String::concat)
-                    .orElse("Bad request");
-            throw new BadRequestException(msg);
+            throw new BadRequestException(errors.getAllErrors().stream().map(x -> x.getDefaultMessage())
+                    .filter(Objects::nonNull).reduce(String::concat).orElse("Bad request111"));
         }
 
-        //аутентифицируем пользователя
         Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginFormDTO.getLogin(), loginFormDTO.getPassword()));
 
-        //генерируем токен для логина с набором authorities, полученным при аутентификации из БД
         final String token = tokenManager.generateToken(authentication.getName(), authentication.getAuthorities());
 
-        return "{\"auth-token\":\"" + token + "\"}";
+        return "{\"" + properties.getHeader() + "\":\"" + token + "\"}";
     }
 
     @PostMapping (value = "/logout")
