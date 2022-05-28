@@ -25,7 +25,7 @@ import java.util.zip.Checksum;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class FileController {
     private final FileService service;

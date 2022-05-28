@@ -18,7 +18,7 @@ import java.util.Objects;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class LoginController {
     private final AuthenticationManager authenticationManager;

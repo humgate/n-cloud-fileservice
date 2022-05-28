@@ -23,7 +23,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); //именно 400 требует спецификация openApi
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //именно 400 требует спецификация openApi
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         response.flushBuffer();
 
