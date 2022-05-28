@@ -2,9 +2,11 @@ package com.humga.cloudservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data @AllArgsConstructor
-public class UnauthorizedResponseDTO {
+@Getter
+@AllArgsConstructor
+public class ErrorDTO {
     String message;
     int id;
 }

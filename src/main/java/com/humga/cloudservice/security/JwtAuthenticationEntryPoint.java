@@ -1,8 +1,7 @@
 package com.humga.cloudservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.humga.cloudservice.model.UnauthorizedResponseDTO;
-import org.springframework.http.HttpStatus;
+import com.humga.cloudservice.model.ErrorDTO;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,11 +22,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //именно 400 требует спецификация openApi
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //хотя спецификация openApi требует 400
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         response.flushBuffer();
 
-        var dto = new UnauthorizedResponseDTO("Incorrect login or password", 401);
+        var dto = new ErrorDTO("Unauthorized. Incorrect login or password", 121);
         PrintWriter writer = response.getWriter();
         writer.println(mapper.writeValueAsString(dto));
         writer.close();

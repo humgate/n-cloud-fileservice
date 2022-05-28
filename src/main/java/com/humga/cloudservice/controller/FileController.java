@@ -25,7 +25,7 @@ import java.util.zip.Checksum;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
+@CrossOrigin(originPatterns = "http://localhost**", allowCredentials = "true")
 @RequestMapping("/cloud")
 public class FileController {
     private final FileService service;
@@ -58,7 +58,6 @@ public class FileController {
 
     @PutMapping(value = "/file", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateFile(@RequestParam("filename") String filename, @RequestBody FileNameDTO fileNameDTO) {
-        System.out.println(fileNameDTO.getFilename());
         service.renameFile(filename, fileNameDTO.getFilename(), getCurrentUserLogin());
     }
 

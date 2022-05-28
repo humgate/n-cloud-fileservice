@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class FileService {
@@ -20,17 +21,22 @@ public class FileService {
     }
 
     public void saveFile(String filename, byte[] bytes, String currentUserLogin) {
-        fileRepo.save((new File(filename, bytes)).setUser(userRepo.getUserByLogin(currentUserLogin).orElseThrow()));
+        fileRepo.save(
+                (new File(filename, bytes)).setUser(
+                        userRepo.getUserByLogin(currentUserLogin)
+                                .orElseThrow(()-> new NoSuchElementException("Unable to save. User not found."))));
     }
 
     public void deleteFile(String filename, String currentUserLogin) {
         fileRepo.delete(
-                fileRepo.findFileByFilenameAndUser_Login(filename, currentUserLogin).orElseThrow());
+                fileRepo.findFileByFilenameAndUser_Login(filename, currentUserLogin)
+                        .orElseThrow(()-> new NoSuchElementException("File not found.")));
     }
 
     public byte[] getFile(String filename, String currentUserLogin) {
         return fileRepo
-                .findFileByFilenameAndUser_Login(filename, currentUserLogin).orElseThrow()
+                .findFileByFilenameAndUser_Login(filename, currentUserLogin)
+                .orElseThrow(()-> new NoSuchElementException("File not found."))
                 .getFile();
     }
 
