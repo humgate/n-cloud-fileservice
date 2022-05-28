@@ -39,7 +39,7 @@ public class FileExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = { DataAccessException.class })
-    public ResponseEntity<ErrorDTO> handleConstraint(DataAccessException e) {
+    public ResponseEntity<ErrorDTO> handleDataAccessException(DataAccessException e) {
         ErrorDTO error;
 
         if (e.getCause() instanceof ConstraintViolationException) {
