@@ -3,7 +3,8 @@
 		"_postman_id": "42e887f8-f6c5-4740-9f7a-c94890d34679",
 		"name": "Cloud API collection",
 		"description": "Cloud API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14322185"
 	},
 	"item": [
 		{
@@ -11,13 +12,24 @@
 			"item": [
 				{
 					"name": "/file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"description": "(Required) ",
 								"key": "auth-token",
-								"value": "ut non ad velit"
+								"value": "Bearer {{serverToken}}"
 							},
 							{
 								"key": "Content-Type",
@@ -33,7 +45,7 @@
 							"formdata": [
 								{
 									"key": "hash",
-									"value": "pariatur proident sunt5",
+									"value": "hash12312312",
 									"description": "undefined",
 									"type": "text"
 								},
@@ -46,7 +58,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseUrl}}/file?filename=schema.sql",
+							"raw": "{{baseUrl}}/file?filename=schema1234.sql",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -56,7 +68,7 @@
 							"query": [
 								{
 									"key": "filename",
-									"value": "schema.sql"
+									"value": "schema1234.sql"
 								}
 							]
 						},
@@ -241,7 +253,7 @@
 							{
 								"description": "(Required) ",
 								"key": "auth-token",
-								"value": "ut non ad velit"
+								"value": "Bearer {{serverToken}}"
 							},
 							{
 								"key": "Accept",
@@ -426,21 +438,26 @@
 				},
 				{
 					"name": "/file",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"description": "(Required) ",
 								"key": "auth-token",
-								"value": "ut non ad velit"
+								"value": "Bearer {{serverToken}}"
 							},
 							{
 								"key": "Accept",
-								"value": "multipart/form-data"
+								"value": "multipart/form-data, application/json, */*"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/file?filename=schema.sql",
+							"raw": "{{baseUrl}}/file?filename=0",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -450,7 +467,7 @@
 							"query": [
 								{
 									"key": "filename",
-									"value": "schema.sql"
+									"value": "0"
 								}
 							]
 						},
@@ -623,7 +640,7 @@
 							{
 								"description": "(Required) ",
 								"key": "auth-token",
-								"value": "ut non ad velit"
+								"value": "Bearer {{serverToken}}"
 							},
 							{
 								"key": "Content-Type",
@@ -636,7 +653,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"edited_filename.txt\"\n}",
+							"raw": "{\n  \"name\": \"edited_sch.sql\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -644,7 +661,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/file?filename=filename.txt",
+							"raw": "{{baseUrl}}/file?filename=schema.sql",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -654,7 +671,7 @@
 							"query": [
 								{
 									"key": "filename",
-									"value": "filename.txt"
+									"value": "schema.sql"
 								}
 							]
 						},
@@ -857,13 +874,27 @@
 				},
 				{
 					"name": "/list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [
 							{
 								"description": "(Required) ",
 								"key": "auth-token",
-								"value": "ut non ad velit"
+								"value": "Bearer {{serverToken}}"
 							},
 							{
 								"key": "Accept",
@@ -871,7 +902,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/list?limit=15",
+							"raw": "{{baseUrl}}/list?limit=5",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -881,8 +912,7 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "15",
-									"description": "Number requested items"
+									"value": "5"
 								}
 							]
 						},
@@ -1054,6 +1084,36 @@
 			"item": [
 				{
 					"name": "/login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.get(\"login\");\r",
+									"pm.collectionVariables.get(\"password\")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"console.log(jsonResponse);\r",
+									"\r",
+									"pm.collectionVariables.set(\"serverToken\", jsonResponse['auth-token']);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1068,7 +1128,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"login\": \"est Excepteur commodo eu dolor\",\n  \"password\": \"consequat in dolor\"\n}",
+							"raw": "{\r\n    \"login\" : \"{{login}}\",\r\n    \"password\" : \"{{password}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1157,7 +1217,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"message\": \"Duis eiusmod\",\n  \"id\": 38386035\n}"
+							"body": "{\n  \"message\": \"message\",\n  \"id\": 38386035\n}"
 						}
 					]
 				},
@@ -1169,7 +1229,7 @@
 							{
 								"description": "(Required) ",
 								"key": "auth-token",
-								"value": "ut non ad velit"
+								"value": "Bearer {{serverToken}}"
 							}
 						],
 						"url": {
@@ -1246,6 +1306,26 @@
 		{
 			"key": "baseUrl",
 			"value": "http://localhost:5500/cloud",
+			"type": "string"
+		},
+		{
+			"key": "login",
+			"value": "alex@email.com",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "passAlex",
+			"type": "string"
+		},
+		{
+			"key": "serverToken",
+			"value": null,
+			"type": "string"
+		},
+		{
+			"key": "tokenProperty",
+			"value": "auth-token",
 			"type": "string"
 		}
 	]
