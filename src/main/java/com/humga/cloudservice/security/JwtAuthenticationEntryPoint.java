@@ -22,13 +22,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //хотя спецификация openApi требует 400
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         response.flushBuffer();
 
-        var dto = new ErrorDTO("Unauthorized. Incorrect login or password", 121);
+        var dto = new ErrorDTO("{access-denied}", 100);
         PrintWriter writer = response.getWriter();
         writer.println(mapper.writeValueAsString(dto));
+        writer.flush();
         writer.close();
     }
 }

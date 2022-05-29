@@ -35,6 +35,8 @@ public class FileController {
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void postFile(@RequestParam("filename") String fileName, @ModelAttribute FileDTO file) throws IOException {
+        Checksum crc32 = new CRC32();
+        crc32.update(file.getFile().getBytes(), 0, file.getFile().getBytes().length);
         service.saveFile(fileName, file.getFile().getBytes(), getCurrentUserLogin());
     }
 

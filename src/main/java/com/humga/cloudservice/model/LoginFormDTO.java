@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 @Data
 @Validated
 public class LoginFormDTO {
-    @Email(message = "{login.invalid}")
+    @Email(message = "{username.format.invalid}")
     private String login;
     private String password;
 }
