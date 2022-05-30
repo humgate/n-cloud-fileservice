@@ -1089,8 +1089,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.get(\"login\");\r",
-									"pm.collectionVariables.get(\"password\")"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1321,11 +1320,6 @@
 		{
 			"key": "serverToken",
 			"value": null,
-			"type": "string"
-		},
-		{
-			"key": "tokenProperty",
-			"value": "auth-token",
 			"type": "string"
 		}
 	]
