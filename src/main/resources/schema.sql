@@ -1,4 +1,4 @@
-/* DML скрипт создания схемы (для справки). Схема БД в приложении создается через liquibase */
+/* DDL скрипт создания схемы (для справки). Схема БД в приложении создается через liquibase */
 create table users
 (
     id       serial primary key,
@@ -24,6 +24,15 @@ create table files
     user_id integer references users (id) not null,
     filename    varchar(64) not null,
     data    bytea not null
+);
+
+alter table files add constraint uk_files unique (user_id, filename);
+
+create table authorities
+(
+    id      serial primary key,
+    user_id integer references users (id) not null,
+    authority varchar(64)
 );
 
 
