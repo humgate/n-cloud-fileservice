@@ -1,9 +1,7 @@
 package com.humga.cloudservice.security;
 
-import com.humga.cloudservice.config.AppProperties;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

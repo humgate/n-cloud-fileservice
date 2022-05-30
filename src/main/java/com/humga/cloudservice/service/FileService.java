@@ -43,7 +43,8 @@ public class FileService {
     public void renameFile(String filename, String newname, String currentUserLogin) {
         fileRepo.save(
                 fileRepo
-                        .findFileByFilenameAndUser_Login(filename, currentUserLogin).orElseThrow()
+                        .findFileByFilenameAndUser_Login(filename, currentUserLogin)
+                        .orElseThrow(()-> new NoSuchElementException("File not found."))
                         .setFilename(newname));
     }
 
