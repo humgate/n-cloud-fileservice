@@ -1,0 +1,27 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  db:
+    image: "horana"
+    ports:
+      - "5430:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - /var/lib/docker/volumes/pg_data_tb/_data:/var/lib/postgresql/data
+
+  backend:
+    image: "backend-service"
+    ports:
+      - "5500:5500"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5430/cloudstoragetest
+
+  frontend:
+    image: "frontend"
+    ports:
+      - "80:80"
+

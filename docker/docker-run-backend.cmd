@@ -1,0 +1,1 @@
+docker run -it --rm -p 5500:5500 --name backend-service backend-service
