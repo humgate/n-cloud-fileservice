@@ -64,7 +64,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = { RuntimeException.class })
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorDTO> handleRuntimeException() {
 
         ErrorDTO error = new ErrorDTO(messageSource.getMessage("internal.error", null, locale), 102);

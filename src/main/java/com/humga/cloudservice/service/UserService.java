@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
                 user.getLogin(), user.getPassword(), grantedAuthorities);
     }
 
-    public User findUser (String login) {
+    private User findUser (String login) {
         return userRepo.getUserByLogin(login).orElseThrow(
                 () -> new UsernameNotFoundException("Invalid username or password."));
     }
