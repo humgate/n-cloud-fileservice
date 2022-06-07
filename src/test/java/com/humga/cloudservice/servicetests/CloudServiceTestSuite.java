@@ -1,4 +1,4 @@
-package com.humga.cloudservice;
+package com.humga.cloudservice.servicetests;
 
 import org.junit.platform.suite.api.SelectPackages;
 import org.junit.platform.suite.api.Suite;
