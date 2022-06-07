@@ -26,7 +26,7 @@ public class FileServiceTests {
     @Autowired
     FileCrudRepository fileRepo;
 
-   private final  byte[] testFile = {1,2,3};
+   private final byte[] testFile = {1,2,3};
 
     @Test
     @Order(1)
