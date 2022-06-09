@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -29,7 +28,7 @@ public class FileControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    private final byte[] TEST_FILE = {1,2,3};
+    private final byte[] TEST_FILE = {1, 2, 3};
 
     //This token expires on 01/01/3000, so if the test is still relevant, it will work)))
     private final String TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGV4QGVtYWlsLmNvbSIs" +
@@ -43,12 +42,12 @@ public class FileControllerTests {
 
         //when then
         mockMvc.perform(
-                multipart("/cloud/file")
-                        .file("file", TEST_FILE)
-                        .param("hash","123")
-                        .queryParam("filename", "file1.dat")
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .header("auth-token", TOKEN))
+                        multipart("/cloud/file")
+                                .file("file", TEST_FILE)
+                                .param("hash", "123")
+                                .queryParam("filename", "file1.dat")
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .header("auth-token", TOKEN))
                 .andExpect(status().isOk());
     }
 
@@ -79,11 +78,23 @@ public class FileControllerTests {
         String response = result.getResponse().getContentAsString();
         String searchString = "Content-Disposition: form-data; name=\"file\"\r\n" +
                 "Content-Type: application/octet-stream\r\n" +
-                "Content-Length: 3\r\n\r\n";
+                "Content-Length: " + TEST_FILE.length + "\r\n\r\n";
         int filePartIdx = response.indexOf(searchString) + searchString.length();
-        byte[] actual = response.substring(filePartIdx, filePartIdx + 3).getBytes();
+        byte[] actual = response.substring(filePartIdx, filePartIdx + TEST_FILE.length).getBytes();
         assertArrayEquals(TEST_FILE, actual);
     }
 
+    @Test
+    void renameFileTest() throws Exception {
+        doNothing().when(fileService).renameFile(anyString(), anyString(), anyString());
 
+        //when then
+        mockMvc.perform(
+                        put("/cloud/file")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"filename\":\"file1renamed.dat\"}")
+                                .queryParam("filename", "file1.dat")
+                                .header("auth-token", TOKEN))
+                .andExpect(status().isOk());
+    }
 }
