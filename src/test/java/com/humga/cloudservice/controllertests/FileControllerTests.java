@@ -7,18 +7,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
-import java.util.Collection;
-
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -31,30 +29,60 @@ public class FileControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    private final byte[] testFile = {1,2,3};
+    private final byte[] TEST_FILE = {1,2,3};
+
+    //This token expires on 01/01/3000, so if the test is still relevant, it will work)))
+    private final String TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGV4QGVtYWlsLmNvbSIs" +
+            "InNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9SRUFEIn0seyJhdXRob3JpdHkiOiJST0xFX1dSSVR" +
+            "FIn1dLCJpc3MiOiJodHRwOi8vaHVtZ2Fpc3N1ZXIuY29tIiwiaWF0IjoxNjU0NjIyMTAyLCJleHAiOj" +
+            "kyNDY0NTc4MDAwfQ.fl3FwFZsx6IuuFbaQZuEOxC9oZPv6P3W0Jk4MUSxXt8";
 
     @Test
     void postFileTest() throws Exception {
         doNothing().when(fileService).saveFile(anyString(), any(), anyString());
 
-        //when
-        MvcResult result = mockMvc.perform(
+        //when then
+        mockMvc.perform(
                 multipart("/cloud/file")
-                        .file("file", testFile)
+                        .file("file", TEST_FILE)
                         .param("hash","123")
                         .queryParam("filename", "file1.dat")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
-                        //This token expires on 01/01/3000, so if the test is still relevant, it will work)))
-                        .header("auth-token", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGV4QGVtYWlsLmNvbSIs" +
-                                "InNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9SRUFEIn0seyJhdXRob3JpdHkiOiJST0xFX1dSSVR" +
-                                "FIn1dLCJpc3MiOiJodHRwOi8vaHVtZ2Fpc3N1ZXIuY29tIiwiaWF0IjoxNjU0NjIyMTAyLCJleHAiOj" +
-                                "kyNDY0NTc4MDAwfQ.fl3FwFZsx6IuuFbaQZuEOxC9oZPv6P3W0Jk4MUSxXt8"))
+                        .header("auth-token", TOKEN))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteFileTest() throws Exception {
+        doNothing().when(fileService).deleteFile(anyString(), anyString());
+
+        //when then
+        mockMvc.perform(
+                        delete("/cloud/file")
+                                .queryParam("filename", "file1.dat")
+                                .header("auth-token", TOKEN))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getFileTest() throws Exception {
+        when(fileService.getFile(anyString(), anyString())).thenReturn(TEST_FILE);
+
+        //when then
+        MvcResult result = mockMvc.perform(
+                        get("/cloud/file")
+                                .queryParam("filename", "file1.dat")
+                                .header("auth-token", TOKEN))
                 .andExpect(status().isOk())
                 .andReturn();
-        String content = result.getResponse().getContentAsString();
 
-        //then
-
+        String response = result.getResponse().getContentAsString();
+        String searchString = "Content-Disposition: form-data; name=\"file\"\r\n" +
+                "Content-Type: application/octet-stream\r\n" +
+                "Content-Length: 3\r\n\r\n";
+        int filePartIdx = response.indexOf(searchString) + searchString.length();
+        byte[] actual = response.substring(filePartIdx, filePartIdx + 3).getBytes();
+        assertArrayEquals(TEST_FILE, actual);
     }
 
 
