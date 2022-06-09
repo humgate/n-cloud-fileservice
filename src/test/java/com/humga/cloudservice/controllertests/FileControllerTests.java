@@ -1,5 +1,7 @@
 package com.humga.cloudservice.controllertests;
 
+import com.humga.cloudservice.model.FileInfoDTO;
+import com.humga.cloudservice.model.entity.File;
 import com.humga.cloudservice.service.FileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -96,5 +103,39 @@ public class FileControllerTests {
                                 .queryParam("filename", "file1.dat")
                                 .header("auth-token", TOKEN))
                 .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void listFileTest() throws Exception {
+        //mock for service
+        List<File> list = new ArrayList<>();
+        list.add(new File("file1", TEST_FILE));
+        list.add(new File("file2", TEST_FILE));
+        list.add(new File("file3", TEST_FILE));
+        when(fileService.getFilesList(anyInt(), anyString())).thenReturn(list);
+
+        //expected
+        List<FileInfoDTO> expectedList = new ArrayList<>();
+        expectedList.add(new FileInfoDTO("file1", 3));
+        expectedList.add(new FileInfoDTO("file2", 3));
+        expectedList.add(new FileInfoDTO("file3", 3));
+
+        //when then
+        String result = mockMvc.perform(
+                        get("/cloud/list")
+                                .queryParam("limit", "3")
+                                .header("auth-token", TOKEN))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<FileInfoDTO> actualList = mapper.readValue(result, new TypeReference<List<FileInfoDTO>>() {});
+
+        //FileInfoDTO correctly overrides equals (by lombok @Data), as well as the List, so this will work:
+        assertEquals(expectedList, actualList);
     }
 }
