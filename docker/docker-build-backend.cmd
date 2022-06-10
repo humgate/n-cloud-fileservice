@@ -1,1 +1,1 @@
-docker build -f DockerfileBACKEND -t backend-service .
+docker build -f docker/DockerfileBACKEND -t backend-service .

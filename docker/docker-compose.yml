@@ -1,6 +1,7 @@
 version: "3.9"  # optional since v1.27.0
 services:
   db:
+    container_name: postgresdb
     image: "horana"
     ports:
       - "5430:5432"
@@ -12,15 +13,17 @@ services:
       - /var/lib/docker/volumes/pg_data_tb/_data:/var/lib/postgresql/data
 
   backend:
+    container_name: backend
     image: "backend-service"
     ports:
       - "5500:5500"
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5430/cloudstoragetest
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb/cloudstoragetest
 
   frontend:
+    container_name: frontend
     image: "frontend"
     ports:
       - "80:80"
