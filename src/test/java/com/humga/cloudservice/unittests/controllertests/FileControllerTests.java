@@ -1,4 +1,4 @@
-package com.humga.cloudservice.controllertests;
+package com.humga.cloudservice.unittests.controllertests;
 
 import com.humga.cloudservice.model.FileInfoDTO;
 import com.humga.cloudservice.model.entity.File;

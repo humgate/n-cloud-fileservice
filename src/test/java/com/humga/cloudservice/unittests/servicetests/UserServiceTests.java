@@ -1,4 +1,4 @@
-package com.humga.cloudservice.servicetests;
+package com.humga.cloudservice.unittests.servicetests;
 
 import com.humga.cloudservice.service.UserService;
 import org.junit.jupiter.api.Test;

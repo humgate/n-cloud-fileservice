@@ -1,26 +1,14 @@
-package com.humga.cloudservice.controllertests;
+package com.humga.cloudservice.unittests.controllertests;
 
-import com.humga.cloudservice.CloudServiceApplication;
-import com.humga.cloudservice.controller.LoginController;
-import com.humga.cloudservice.model.LoginFormDTO;
-import com.humga.cloudservice.security.JwtAuthenticationFilter;
 import com.humga.cloudservice.security.JwtTokenManager;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
 
@@ -28,9 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -39,7 +28,7 @@ public class LoginControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SpyBean
     private JwtTokenManager jwtTokenManager;
 
     @Test
@@ -76,16 +65,20 @@ public class LoginControllerTests {
                         "\"Invalid login format. Login must be a valid e-mail.\",\"id\":101}"));
     }
 
-//    @Test
-//    void logoutNotLoggedInTest() throws Exception {
-//        //given
-//        when(jwtTokenManager.getTokenFromHeader(anyString())).thenReturn("testtoken");
-//        doNothing().when(jwtTokenManager).invalidateToken(anyString());
-//
-//        //when-then
-//        mockMvc.perform(post("/cloud/logout")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(content().string("{\"message\":\"Unauthorized. Bad credentials.\",\"id\":100}"));
-//    }
+    @Test
+    void logoutTest() throws Exception {
+        //given
+        //This token expires on 01/01/3000, so if the test is still relevant, it will work)))
+        final String token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGV4QGVtYWlsLmNvbSIs" +
+                "InNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9SRUFEIn0seyJhdXRob3JpdHkiOiJST0xFX1dSSVR" +
+                "FIn1dLCJpc3MiOiJodHRwOi8vaHVtZ2Fpc3N1ZXIuY29tIiwiaWF0IjoxNjU0NjIyMTAyLCJleHAiOj" +
+                "kyNDY0NTc4MDAwfQ.fl3FwFZsx6IuuFbaQZuEOxC9oZPv6P3W0Jk4MUSxXt8";
+
+        doNothing().when(jwtTokenManager).invalidateToken(anyString());
+
+        //when-then
+        mockMvc.perform(post("/cloud/logout")
+                .header("auth-token", token))
+                .andExpect(status().isOk());
+    }
 }
