@@ -1,4 +1,6 @@
 FROM openjdk:16-jdk-alpine
+#bash is not needed for the application, it is used by testcontainers to better debug info
+RUN apk add --no-cache bash
 EXPOSE 5500
 ADD ../target/cloud-service-0.0.1-SNAPSHOT.jar backend-service
 ENTRYPOINT ["java","-jar","/backend-service"]
