@@ -1,42 +1,38 @@
 package com.humga.cloudservice;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.humga.cloudservice.model.LoginFormDTO;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@Testcontainers
 @Slf4j
-public class TestContTest {
-    @Autowired
-    TestRestTemplate restTemplate;
-    static final PostgreSQLContainer<?> postgreSQLContainer;
-    static final GenericContainer<?> backendContainer;
+public class TestContainersTests {
+    private static final TestRestTemplate restTemplate = new TestRestTemplate();
+    private static String token;
+    private static final String appUrl;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final HttpHeaders headers = new HttpHeaders();
+    private static final PostgreSQLContainer<?> postgreSQLContainer;
+    private static final GenericContainer<?> backendContainer;
 
     static {
         Network network = Network.newNetwork();
@@ -56,37 +52,41 @@ public class TestContTest {
                 .withExposedPorts(5500)
                 .withNetwork(network)
                 .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgresdb/test")
-                .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("-----backend-service----"))
+                .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("----backend-service----"))
                 .dependsOn(postgreSQLContainer);
 
         backendContainer.start();
-    }
 
-    @DynamicPropertySource
-    static void datasourceConfig(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+        appUrl =  "http://" + backendContainer.getHost() + ":" + backendContainer.getMappedPort(5500);
     }
 
     @BeforeAll
     static void init() {
-        //backendContainer.start();
+
     }
 
     @Test
-    void test() throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
+    @Order(1)
+    void loginTest() throws JsonProcessingException {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Content-Type", "application/json");
         headers.add("Accept", "application/json,*/*");
-        final ObjectMapper objectMapper = new ObjectMapper();
         HttpEntity<String> request = new HttpEntity<>(
                 objectMapper.writeValueAsString(new LoginFormDTO("alex@email.com", "passAlex")), headers);
 
+        String response = restTemplate.postForObject(appUrl + "/cloud/login", request, String.class);
 
-        ResponseEntity<String> forEntity = restTemplate.postForEntity(
-                "http://" + backendContainer.getHost() + ":" + backendContainer.getMappedPort(5500) + "/cloud/login",
-                request, String.class);
+        assertNotNull(response);
+        assertTrue(response.matches("\\{\"auth-token\":\"[\\w_.-]{269}\"}"));
+
+        token = "Bearer " + response.substring(15, response.length() - 2);
+    }
+
+    @Test
+    @Order(2)
+    void logoutTest() {
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        headers.add("auth-token", token);
+        restTemplate.postForObject(appUrl + "/cloud/logout", request, String.class);
     }
 }
