@@ -62,7 +62,7 @@ public class LoginControllerTests {
                                 "}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("{\"message\":" +
-                        "\"Invalid login format. Login must be a valid e-mail.\",\"id\":101}"));
+                        "\"Invalid login format. Login must be a valid e-mail.\",\"id\":102}"));
     }
 
     @Test

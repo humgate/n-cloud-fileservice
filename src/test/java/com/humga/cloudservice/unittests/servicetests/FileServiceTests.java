@@ -3,8 +3,10 @@ package com.humga.cloudservice.unittests.servicetests;
 import com.humga.cloudservice.model.entity.File;
 import com.humga.cloudservice.repository.FileCrudRepository;
 import com.humga.cloudservice.service.FileService;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +20,7 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FileServiceTests {
     @Autowired
     FileService fileService;
