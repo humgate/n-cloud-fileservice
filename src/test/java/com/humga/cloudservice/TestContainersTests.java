@@ -1,41 +1,31 @@
 package com.humga.cloudservice;
 
-import com.humga.cloudservice.model.FileDTO;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import com.humga.cloudservice.model.FileInfoDTO;
 import com.humga.cloudservice.model.LoginFormDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,35 +39,36 @@ public class TestContainersTests {
     private static final String appUrl;
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final byte[] TEST_FILE = {1, 2, 3};
-
     private static final PostgreSQLContainer<?> postgreSQLContainer;
     private static final GenericContainer<?> backendContainer;
 
     static {
         Network network = Network.newNetwork();
+        try {
+            postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("horana")
+                    .asCompatibleSubstituteFor("postgres"))
+                    .withDatabaseName("test")
+                    .withUsername("postgres")
+                    .withPassword("postgres")
+                    .withNetwork(network)
+                    .withNetworkAliases("postgresdb")
+                    .withReuse(true);
 
-        postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("horana")
-                .asCompatibleSubstituteFor("postgres"))
-                .withDatabaseName("test")
-                .withUsername("postgres")
-                .withPassword("postgres")
-                .withNetwork(network)
-                .withNetworkAliases("postgresdb")
-                .withReuse(true);
+            postgreSQLContainer.start();
 
-        postgreSQLContainer.start();
+            backendContainer = new GenericContainer<>("backend-service")
+                    .withExposedPorts(5500)
+                    .withNetwork(network)
+                    .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgresdb/test")
+                    .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("----backend-service----"))
+                    .dependsOn(postgreSQLContainer);
 
-        backendContainer = new GenericContainer<>("backend-service")
-                .withExposedPorts(5500)
-                .withNetwork(network)
-                .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgresdb/test")
-                .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("----backend-service----"))
-                .dependsOn(postgreSQLContainer);
+            backendContainer.start();
 
-        backendContainer.start();
+            appUrl = "http://" + backendContainer.getHost() + ":" + backendContainer.getMappedPort(5500);
+        } finally {
 
-        appUrl =  "http://" + backendContainer.getHost() + ":" + backendContainer.getMappedPort(5500);
+        }
     }
 
     @Test
