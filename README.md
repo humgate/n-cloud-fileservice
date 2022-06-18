@@ -64,6 +64,18 @@ mock-ировании (@MockBean) остальных сервисов. База 
 контейнере используется образ nginx:latest.  
 Для сборки самого приложения в jar файл необходимо выполнить `mvn clean package`.
 
+Для запуска приложения (все команды построения/запуска или скрипты .cmd нужно запускать из корневой папки проекта):
+- Скачать latest docker образ postgreSQL
+- Запустить docker контейнер postgreSQL командой из файла `docker/docker-run-db.cmd`
+- Подключиться к postgreSQL в контейнере с помощью любого средcтва работы с БД, например DBeaver
+- Создать в контейнере базу данных с именем `cloudstoragetest` и пользователем `postgres` c паролем `postgres` 
+- Собрать бэкенд-приложение с помощью команды `mvn clean package`.
+- Собрать docker-образ приложения с помощью команды из `docker/docker-build-backend.cmd`
+- Скачать latest docker образ nginx
+- Собрать docker-образ FRONTEND приложения с помощью команды из `docker/docker-build-frontend.cmd`
+- Остановить контейнер базы данных
+- Запустить все три контейнера (БД, backend, FRONTEND) с помощью команды из `docker/docker-compose-up.cmd`
+
 
 
 
