@@ -75,6 +75,7 @@ mock-ировании (@MockBean) остальных сервисов. База 
 - Собрать docker-образ FRONTEND приложения с помощью команды из `docker/docker-build-frontend.cmd`
 - Остановить контейнер базы данных
 - Запустить все три контейнера (БД, backend, FRONTEND) с помощью команды из `docker/docker-compose-up.cmd`
+- Зайти на http://localhost:80 и залогиниться в приложение под пользователем `alex@email.com` c паролем `passAlex`
 
 
 
